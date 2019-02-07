@@ -12,14 +12,17 @@ GameState.prototype.preload = function() {
     this.game.load.image('player', 'assets/flash.png', { frameWidth: 16, frameHeight: 16 });
 	this.game.load.image('enemy', 'assets/enemy.png', { frameWidth: 16, frameHeight: 16 });
 	this.game.load.image('flame', 'assets/flame.png', { frameWidth: 16, frameHeight: 16 });
+	this.game.load.image('star', 'assets/star.png', { frameWidth: 16, frameHeight: 16 });
 };
 
 // Setup the example
 GameState.prototype.create = function() {
 	this.gameOver = false;
 	this.numHits = 0;
+	this.score = 0;
     // Set stage background to something sky colored
     this.game.stage.backgroundColor = 0x4488cc;
+	this.scoreText = this.game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
     // Define movement constants
     this.MAX_SPEED = 500; // pixels/second
@@ -41,13 +44,13 @@ GameState.prototype.create = function() {
     game.physics.arcade.gravity.y = this.GRAVITY;
     // Flag to track if the jump button is pressed
     this.jumping = false;
-	this.player.body.setSize(75,75,0, 50);
+	this.player.body.setSize(50,50,0, 75);
 	
 	// Create a follower
 	enemy = new Follower(this.game, 0, 0, this.player);
     this.game.add.existing(enemy);
 	this.physics.arcade.collide(this.player, enemy);
-	enemy.body.setSize(50,50,0, 25);
+	enemy.body.setSize(50,30,0, 25);
 	//this.player.body.onCollide = new Phaser.Signal();
 
     // Create some ground for the player to walk on
@@ -68,31 +71,28 @@ GameState.prototype.create = function() {
 		
 	this.platforms.setAll('body.allowGravity', false);
 	this.platforms.setAll('body.immovable', true);
-	/*
-	this.flames = this.game.add.physicsGroup();
-	this.flames.scale.setTo(.1,.1);
-	this.flames.create(25,3400, 'flame');
-	this.flames.create(7750, 3400, 'flame');
-	this.flames.setAll('body.allowGravity', false);
-	this.platforms.setAll('body.immovable', true);
-	*/
+
 	this.flame = this.game.add.sprite(0, 375, 'flame');
-	this.flame.scale.setTo(.1,.1);
+	this.flame.scale.setTo(.05,.1);
 	this.game.physics.enable(this.flame, Phaser.Physics.ARCADE);
 	this.flame.body.allowGravity = false;
 	this.flame.body.immovable = true;
 	
 	this.flame2 = this.game.add.sprite(775, 375, 'flame');
-	this.flame2.scale.setTo(.1,.1);
+	this.flame2.scale.setTo(.05,.1);
 	this.game.physics.enable(this.flame2, Phaser.Physics.ARCADE);
 	this.flame2.body.allowGravity = false;
 	this.flame2.body.immovable = true;
 	
 	this.flame3 = this.game.add.sprite(400, 375, 'flame');
-	this.flame3.scale.setTo(.1,.1);
+	this.flame3.scale.setTo(.05,.1);
 	this.game.physics.enable(this.flame3, Phaser.Physics.ARCADE);
 	this.flame3.body.allowGravity = false;
 	this.flame3.body.immovable = true;
+	
+	this.star = this.game.add.sprite(0, 200, 'star');
+	this.game.physics.enable(this.star, Phaser.Physics.ARCADE);
+	this.star.body.setSize(10,10,0, 30);
 
     // Capture certain keys to prevent their default actions in the browser.
     // This is only necessary because this is an HTML5 game. Games on other
@@ -128,6 +128,8 @@ GameState.prototype.drawHeightMarkers = function() {
 // The update() method is called every frame
 GameState.prototype.update = function() {
     // Collide the player with the ground
+	this.game.physics.arcade.collide(this.star, this.ground);
+	this.game.physics.arcade.collide(this.star, this.platforms);
     this.game.physics.arcade.collide(this.player, this.ground);
 	this.game.physics.arcade.collide(this.player, this.platforms);
 	this.game.physics.arcade.collide(this.player, enemy);
@@ -135,6 +137,14 @@ GameState.prototype.update = function() {
 		this.numHits++;
 		if(this.numHits > 1)
 			this.hitFlame();
+	}
+	if(this.player.overlap(this.star)){
+		this.score+=10;
+		this.scoreText.setText("Score:" + this.score);
+		this.respawnStar();
+	}
+	if(this.star.overlap(this.flame) || this.star.overlap(this.flame2) || this.star.overlap(this.flame3)){
+		this.respawnStar();
 	}
 	if(this.gameOver)
 		return;
@@ -223,9 +233,20 @@ GameState.prototype.upInputReleased = function() {
 };
 GameState.prototype.hitFlame = function(){
 	console.log("hitFlame");
+	this.player.tint = 0xff0000;
 	this.gameOver = true;
 	this.game.pause = true;
 };
+GameState.prototype.respawnStar = function(){
+	console.log("respawning star");
+	console.log(this.star.x);
+	this.star.x = Math.random() * (800);
+	while(this.star.x > 300 && this.star.x < 500){
+			this.star.x = Math.random() * 800;
+	}
+	this.star.y = Math.random() * (200);;
+	this.game.physics.enable(this.star, Phaser.Physics.ARCADE);
+}
 
 
 // Follower constructor
