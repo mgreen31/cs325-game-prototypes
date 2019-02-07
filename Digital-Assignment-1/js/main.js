@@ -6,16 +6,18 @@
 var GameState = function(game) {
 };
 // Load images and sounds
-this.gameOver = false;
+//GameState.prototype.gameOver = false;
 GameState.prototype.preload = function() {
     this.game.load.image('ground', 'assets/platform.png');
     this.game.load.image('player', 'assets/flash.png', { frameWidth: 16, frameHeight: 16 });
 	this.game.load.image('enemy', 'assets/enemy.png', { frameWidth: 16, frameHeight: 16 });
-	this.game.load.image('flame', 'assets/flame.png');
+	this.game.load.image('flame', 'assets/flame.png', { frameWidth: 16, frameHeight: 16 });
 };
 
 // Setup the example
 GameState.prototype.create = function() {
+	this.gameOver = false;
+	this.numHits = 0;
     // Set stage background to something sky colored
     this.game.stage.backgroundColor = 0x4488cc;
 
@@ -27,7 +29,7 @@ GameState.prototype.create = function() {
     this.JUMP_SPEED = -700; // pixels/second (negative y is up)
 
     // Create a player sprite
-    this.player = this.game.add.sprite(this.game.width/2, this.game.height/2, 'player');
+    this.player = this.game.add.sprite(this.game.width/2, -50, 'player');
     this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
     // Make player collide with world boundaries so he doesn't leave the stage
     this.player.body.collideWorldBounds = true;
@@ -42,7 +44,7 @@ GameState.prototype.create = function() {
 	this.player.body.setSize(75,75,0, 50);
 	
 	// Create a follower
-	enemy = new Follower(this.game, this.game.width/2, this.game.height/2, this.player);
+	enemy = new Follower(this.game, 0, 0, this.player);
     this.game.add.existing(enemy);
 	this.physics.arcade.collide(this.player, enemy);
 	enemy.body.setSize(50,50,0, 25);
@@ -66,16 +68,31 @@ GameState.prototype.create = function() {
 		
 	this.platforms.setAll('body.allowGravity', false);
 	this.platforms.setAll('body.immovable', true);
-	
-	this.flames = this.game.add.group();
-	
-	this.flames.create(25,3500, 'flame');
-	this.flames.create(7750, 3500, 'flame');
-	
+	/*
+	this.flames = this.game.add.physicsGroup();
 	this.flames.scale.setTo(.1,.1);
-
-	this.physics.arcade.collide(this.player, this.flames);
-	//this.physics.add.overlap(this.player, this.flames, hitFlame, null, this);
+	this.flames.create(25,3400, 'flame');
+	this.flames.create(7750, 3400, 'flame');
+	this.flames.setAll('body.allowGravity', false);
+	this.platforms.setAll('body.immovable', true);
+	*/
+	this.flame = this.game.add.sprite(0, 375, 'flame');
+	this.flame.scale.setTo(.1,.1);
+	this.game.physics.enable(this.flame, Phaser.Physics.ARCADE);
+	this.flame.body.allowGravity = false;
+	this.flame.body.immovable = true;
+	
+	this.flame2 = this.game.add.sprite(775, 375, 'flame');
+	this.flame2.scale.setTo(.1,.1);
+	this.game.physics.enable(this.flame2, Phaser.Physics.ARCADE);
+	this.flame2.body.allowGravity = false;
+	this.flame2.body.immovable = true;
+	
+	this.flame3 = this.game.add.sprite(400, 375, 'flame');
+	this.flame3.scale.setTo(.1,.1);
+	this.game.physics.enable(this.flame3, Phaser.Physics.ARCADE);
+	this.flame3.body.allowGravity = false;
+	this.flame3.body.immovable = true;
 
     // Capture certain keys to prevent their default actions in the browser.
     // This is only necessary because this is an HTML5 game. Games on other
@@ -110,12 +127,17 @@ GameState.prototype.drawHeightMarkers = function() {
 
 // The update() method is called every frame
 GameState.prototype.update = function() {
-	if(gameOver)
-		return;
     // Collide the player with the ground
     this.game.physics.arcade.collide(this.player, this.ground);
 	this.game.physics.arcade.collide(this.player, this.platforms);
 	this.game.physics.arcade.collide(this.player, enemy);
+	if(this.player.overlap(this.flame) || this.player.overlap(this.flame2) || this.player.overlap(this.flame3)){
+		this.numHits++;
+		if(this.numHits > 1)
+			this.hitFlame();
+	}
+	if(this.gameOver)
+		return;
 
     if (this.leftInputIsActive()) {
         // If the LEFT key is down, set the player velocity to move left
@@ -200,11 +222,9 @@ GameState.prototype.upInputReleased = function() {
     return released;
 };
 GameState.prototype.hitFlame = function(){
-    //this.game.physics.pause();
-
-    //player.setTint(0xff0000);
-
-    //gameOver = true;
+	console.log("hitFlame");
+	this.gameOver = true;
+	this.game.pause = true;
 };
 
 
@@ -223,7 +243,7 @@ var Follower = function(game, x, y, target) {
 
 	this.scale.setTo(.15,.15);
     // Define constants that affect motion
-    this.MAX_SPEED = 400; // pixels/second
+    this.MAX_SPEED = 200; // pixels/second
     this.MIN_DISTANCE = 64; // pixels
 };
 // Followers are a type of Phaser.Sprite
@@ -258,23 +278,6 @@ Follower.prototype.update = function() {
 			this.target.body.velocity.x -= this.MAX_SPEED/4;
 		}
 	}
-	
-	/*
-    // Calculate distance to target
-    var distance = this.game.math.distance(this.x, this.y, this.target.x, this.target.y);
-
-    // If the distance > MIN_DISTANCE then move
-    if (distance > this.MIN_DISTANCE) {
-        // Calculate the angle to the target
-        var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
-
-        // Calculate velocity vector based on rotation and this.MAX_SPEED
-        this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
-        this.body.velocity.y = Math.sin(rotation) * this.MAX_SPEED;
-    } else {
-        this.body.velocity.setTo(0, 0);
-    }
-	*/
 };
 
 
