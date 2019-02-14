@@ -44,7 +44,7 @@ GameState.prototype.create = function() {
     game.physics.arcade.gravity.y = this.GRAVITY;
     // Flag to track if the jump button is pressed
     this.jumping = false;
-	this.player.body.setSize(50,50,0, 75);
+	this.player.body.setSize(50,50,25, 75);
 	
 	// Create a follower
 	enemy = new Follower(this.game, 0, 0, this.player);
