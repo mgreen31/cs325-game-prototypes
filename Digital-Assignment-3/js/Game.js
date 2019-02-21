@@ -50,6 +50,7 @@ GameStates.makeGame = function( game, shared ) {
 	
 	function changeWind() {
 		var rand = Math.floor(Math.random()*4);
+		grav = Math.random()*300 + 1100;
 		windsfx.stop();
 		windsfx.play();
 		switch(rand){
@@ -225,12 +226,12 @@ GameStates.makeGame = function( game, shared ) {
 			switch(currentWind){
 				case 0:
 					game.physics.arcade.gravity.y = grav;
-					game.physics.arcade.gravity.x = grav;
+					game.physics.arcade.gravity.x = grav/2;
 					//player.body.acceleration.x += windAccel;
 					break
 				case 1:
 					game.physics.arcade.gravity.y = grav;
-					game.physics.arcade.gravity.x = -grav;
+					game.physics.arcade.gravity.x = -grav/2;
 					//player.body.acceleration.x -= windAccel;
 					break;
 				case 2:
