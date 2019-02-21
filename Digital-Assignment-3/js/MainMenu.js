@@ -26,17 +26,17 @@ GameStates.makeMainMenu = function( game, shared ) {
             music = game.add.audio('titleMusic');
             music.play();
 			
+			
+    
+            game.add.sprite(0, 0, 'titlePage');
+			//game.add.text(800, 300, "Click below to become a bird!", { fontSize: '64px', fill: '#999' });
+            playButton = game.add.button( 438, 800, 'playButton', startGame, null, 'over', 'def', 'down');
 			//player
 			player = game.add.sprite(game.width/2, 400, 'birdperson');
 			player.scale.setTo(1, 1);
 			
 			var anim = player.animations.add('fly');
 			player.animations.play('fly', 10, true);
-    
-            game.add.sprite(0, 0, 'titlePage');
-			//game.add.text(800, 300, "Click below to become a bird!", { fontSize: '64px', fill: '#999' });
-            playButton = game.add.button( 438, 800, 'playButton', startGame, null, 'over', 'def', 'down');
-			
         },
     
         update: function () {
