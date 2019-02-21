@@ -225,12 +225,12 @@ GameStates.makeGame = function( game, shared ) {
 			switch(currentWind){
 				case 0:
 					game.physics.arcade.gravity.y = grav;
-					game.physics.arcade.gravity.x = grav/2;
+					game.physics.arcade.gravity.x = grav;
 					//player.body.acceleration.x += windAccel;
 					break
 				case 1:
 					game.physics.arcade.gravity.y = grav;
-					game.physics.arcade.gravity.x = -grav/2;
+					game.physics.arcade.gravity.x = -grav;
 					//player.body.acceleration.x -= windAccel;
 					break;
 				case 2:
