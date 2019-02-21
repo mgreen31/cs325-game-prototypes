@@ -8,6 +8,7 @@ GameStates.makeGame = function( game, shared ) {
 	var arrowsu;//bottom screen pointing up
 	var player;
 	var redbulls;
+	var rActive;//number of redbulls on screen
 	var timer;
 	var secs;
 	var clockText;
@@ -47,7 +48,8 @@ GameStates.makeGame = function( game, shared ) {
 		if(secs == 0){
 			secs = 3;
 			changeWind();
-			updateRedbull();
+			if(rActive == 0)
+				updateRedbull();
 		}
 		clockText.setText("Wind Change!: " + secs + "s");
 		/*if(clockTotal%5 == 0){
@@ -142,6 +144,7 @@ GameStates.makeGame = function( game, shared ) {
 		}
 	}
 	function collectRedbull (player, redbull){
+		rActive--;
 		console.log("Player collected redbull");
 		redbull.visible = false;
 		redbull.body.x = game.width+50;
@@ -152,6 +155,7 @@ GameStates.makeGame = function( game, shared ) {
 		scoreText.setText('Score: ' + score);
 	}
 	function updateRedbull(){
+		rActive = 3;
 		console.log("Updating Redbull");
 		for(var i = 0; i < redbulls.children.length; i++){
 			redbulls.children[i].visible = true;
@@ -174,6 +178,7 @@ GameStates.makeGame = function( game, shared ) {
 			jump_speed = -300; // pixels/second (negative y is up)
 			currentWind = -1//0 for right, 1 for left, 2 for down, 3 for up
 			windAccel = 100;
+			rActive = 3;
 			
 			music = game.add.audio('gameMusic');
             music.play();
