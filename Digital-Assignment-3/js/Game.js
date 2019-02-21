@@ -7,6 +7,7 @@ GameStates.makeGame = function( game, shared ) {
 	var arrowsd;//top screen pointing down
 	var arrowsu;//bottom screen pointing up
 	var player;
+	var redbulls;
 	var timer;
 	var secs;
 	var clockText;
@@ -20,6 +21,8 @@ GameStates.makeGame = function( game, shared ) {
 	var windAccel;
 	var scoreText;
 	var score;
+	var clockTotal;
+	var clockTotalText;
 	var music = null;
 	var windsfx = null;
 	var wingsfx = null;
@@ -39,13 +42,18 @@ GameStates.makeGame = function( game, shared ) {
 	
 	function clockUpdate() {
 		secs--;
-		score++;
+		clockTotal++;
+		console.log("clockTotal = " + clockTotal);
 		if(secs == 0){
 			secs = 3;
 			changeWind();
+			updateRedbull();
 		}
 		clockText.setText("Wind Change!: " + secs + "s");
-		scoreText.setText("Score: " + score);
+		/*if(clockTotal%5 == 0){
+			updateRedbull();
+		}*/
+		clockTotalText.setText("Time: " + clockTotal + "s");
 	}
 	
 	function changeWind() {
@@ -133,12 +141,32 @@ GameStates.makeGame = function( game, shared ) {
 			player.body.acceleration.y = 0;
 		}
 	}
+	function collectRedbull (player, redbull){
+		console.log("Player collected redbull");
+		redbull.visible = false;
+		redbull.body.x = game.width+50;
+		redbull.body.y = game.height+50;
+		redbull.body.enable = false;
+		//  Add and update the score
+		score += 10;
+		scoreText.setText('Score: ' + score);
+	}
+	function updateRedbull(){
+		console.log("Updating Redbull");
+		for(var i = 0; i < redbulls.children.length; i++){
+			redbulls.children[i].visible = true;
+			redbulls.children[i].body.enable = true;
+			redbulls.children[i].x = (Math.random()*(game.width-100))+50;
+			redbulls.children[i].y = (Math.random()*(game.height-100))+50;
+		}
+	}
     
     return {
     
         create: function () {
 			secs = 3;
 			score = 0;
+			clockTotal = 0;
 			clockText;
 			max_speed = 200; // pixels/second
 			accel = 900; // pixels/second/second
@@ -192,8 +220,9 @@ GameStates.makeGame = function( game, shared ) {
 			timer.loop(1000,clockUpdate, this);
 			timer.start();
 			
-			clockText = game.add.text(16, 16, 'Wind Change!: 3s', { fontSize: '32px', fill: '#000' });
-			scoreText = game.add.text(16, 48, 'Score: --', { fontSize: '32px', fill: '#000' });
+			clockTotalText = game.add.text(16, 0, 'Time: -s', { fontSize: '32px', fill: '#000' });
+			clockText = game.add.text(16, 32, 'Wind Change!: 3s', { fontSize: '32px', fill: '#000' });
+			scoreText = game.add.text(16, 64, 'Score: --', { fontSize: '32px', fill: '#000' });
 			
 			//player
 			player = game.add.sprite(game.width/2, 400, 'birdperson');
@@ -202,6 +231,19 @@ GameStates.makeGame = function( game, shared ) {
 			//player.body.collideWorldBounds = true;
 			game.physics.arcade.gravity.y = grav;
 			pjump = false;
+			
+			//collectible
+			redbulls = game.add.group();
+			for(var i = 0; i < 3; i++){
+				//var redbull = game.add.sprite(game.width, game.height, 'redbull');
+				var redbull = game.add.sprite((Math.random()*(game.width-100))+50, (Math.random()*(game.height-100))+50, 'redbull');
+				redbull.scale.setTo(.1, .1);
+				game.physics.enable(redbull, Phaser.Physics.ARCADE);
+				redbull.body.immovable = true;
+				redbull.body.allowGravity = false;//later they will move with wind/gravity
+				redbull.visible = true;
+				redbulls.add(redbull);
+			}
 			
 			var anim = player.animations.add('fly');
 			player.animations.play('fly', 10, true);
@@ -215,13 +257,16 @@ GameStates.makeGame = function( game, shared ) {
 				Phaser.Keyboard.W,
 				Phaser.Keyboard.S,
 			]);
+			game.physics.arcade.gravity.y = grav;
+			game.physics.arcade.gravity.x = 0;
         },
     
         update: function () {
 			playerMovement();
-			if(player.body.x > game.width || player.body.x < -64 || player.body.y < -64 || player.body.y > game.height){
+			if(player.body.x > game.width || player.body.x < -80 || player.body.y < -80 || player.body.y > game.height){
 				quitGame();
 			}
+			game.physics.arcade.overlap(player, redbulls, collectRedbull, null, this);
 			console.log("currentWind = " + currentWind);
 			switch(currentWind){
 				case 0:

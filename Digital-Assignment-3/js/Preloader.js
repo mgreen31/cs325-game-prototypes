@@ -36,6 +36,7 @@ GameStates.makePreloader = function( game ) {
 			game.load.image( 'arrow', 'assets/arrows.png');
 			game.load.spritesheet( 'birdperson', 'assets/pidgeon.png', 169, 158, 10);
 			game.load.image( 'menuButton', 'assets/menuButton.png');
+			game.load.image( 'redbull', 'assets/redbull.png');
         },
     
         create: function () {
