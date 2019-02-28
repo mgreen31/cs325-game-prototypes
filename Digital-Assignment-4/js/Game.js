@@ -9,8 +9,10 @@ GameStates.makeGame = function( game, shared ) {
 	var player;
 	var redbulls;
 	var numRedbulls;
+	var redbullAccel;
 	var hazards;
 	var numHazards;
+	var hazardAccel;
 	var rActive;//number of redbulls on screen
 	var timer;
 	var secs;
@@ -51,16 +53,10 @@ GameStates.makeGame = function( game, shared ) {
 		if(secs == 0){
 			secs = 3;
 			changeWind();
-			/*if(rActive == 0)
-				updateRedbull();
-			*/
 			updateRedbull();
 			updateHazards();
 		}
 		clockText.setText("Wind Change!: " + secs + "s");
-		/*if(clockTotal%5 == 0){
-			updateRedbull();
-		}*/
 		clockTotalText.setText("Time Left: " + clockTotal + "s");
 	}
 	
@@ -178,22 +174,22 @@ GameStates.makeGame = function( game, shared ) {
 				case 0:
 					hazards.children[i].x = -(Math.random()*500);
 					hazards.children[i].y = (Math.random()*(game.height-100))+50;
-					hazards.children[i].body.acceleration.x = 600;
+					hazards.children[i].body.acceleration.x = hazardAccel;
 					break;
 				case 1:
 					hazards.children[i].x = game.width+(Math.random()*500);
 					hazards.children[i].y = (Math.random()*(game.height-100))+50;
-					hazards.children[i].body.acceleration.x = -600;
+					hazards.children[i].body.acceleration.x = -hazardAccel;
 					break;
 				case 2:
 					hazards.children[i].x = (Math.random()*(game.width-100))+50;
 					hazards.children[i].y = -(Math.random()*(500));
-					hazards.children[i].body.acceleration.y = 600;
+					hazards.children[i].body.acceleration.y = hazardAccel;
 					break;
 				case 3:
 					hazards.children[i].x = (Math.random()*(game.width-100))+50;
 					hazards.children[i].y = game.height+(Math.random()*(500));
-					hazards.children[i].body.acceleration.y = -600;
+					hazards.children[i].body.acceleration.y = -hazardAccel;
 					break;
 				default:
 					break;
@@ -216,40 +212,28 @@ GameStates.makeGame = function( game, shared ) {
 				case 0:
 					redbulls.children[i].x = -(Math.random()*500);
 					redbulls.children[i].y = (Math.random()*(game.height-100))+50;
-					redbulls.children[i].body.acceleration.x = 500;
+					redbulls.children[i].body.acceleration.x = redbullAccel;
 					break
 				case 1:
 					redbulls.children[i].x = game.width+(Math.random()*(500));
 					redbulls.children[i].y = (Math.random()*(game.height-100))+50;
-					redbulls.children[i].body.acceleration.x = -500;
+					redbulls.children[i].body.acceleration.x = -redbullAccel;
 					break;
 				case 2:
 					redbulls.children[i].x = (Math.random()*(game.width-100))+50;
 					redbulls.children[i].y = -(Math.random()*(500));
-					redbulls.children[i].body.acceleration.y = 500;
+					redbulls.children[i].body.acceleration.y = redbullAccel;
 					break;
 				case 3:
 					redbulls.children[i].x = (Math.random()*(game.width-100))+50;
 					redbulls.children[i].y = game.height+(Math.random()*(500));
-					redbulls.children[i].body.acceleration.y = -500;
+					redbulls.children[i].body.acceleration.y = -redbullAccel;
 					break;
 				default:
 					break;
 			}
 		}
 	}
-	/*
-	function updateRedbull(){
-		rActive = 3;
-		console.log("Updating Redbull");
-		for(var i = 0; i < redbulls.children.length; i++){
-			redbulls.children[i].visible = true;
-			redbulls.children[i].body.enable = true;
-			redbulls.children[i].x = (Math.random()*(game.width-100))+50;
-			redbulls.children[i].y = (Math.random()*(game.height-100))+50;
-		}
-	}
-	*/
     return {
     
         create: function () {
@@ -263,6 +247,8 @@ GameStates.makeGame = function( game, shared ) {
 			jump_speed = -300; // pixels/second (negative y is up)
 			currentWind = -1//0 for right, 1 for left, 2 for down, 3 for up
 			windAccel = 100;
+			hazardAccel = 450;
+			redbullAccel = 500;
 			numRedbulls = 5;
 			numHazards = 6;
 			rActive = numRedbulls;
@@ -327,23 +313,22 @@ GameStates.makeGame = function( game, shared ) {
 			//collectible
 			redbulls = game.add.group();
 			for(var i = 0; i < numRedbulls; i++){
-				//var redbull = game.add.sprite(game.width, game.height, 'redbull');
-				var redbull = game.add.sprite((Math.random()*(game.width-100))+50, (Math.random()*(game.height-100))+50, 'redbull');
+				var redbull = game.add.sprite(game.width+100, game.height+100, 'redbull');
 				redbull.scale.setTo(.1, .1);
 				game.physics.enable(redbull, Phaser.Physics.ARCADE);
 				redbull.body.immovable = true;
 				redbull.body.allowGravity = false;
-				redbull.visible = true;
+				//redbull.visible = true;
 				redbulls.add(redbull);
 			}
 			hazards = game.add.group();
 			for(var i = 0; i < numHazards; i++){
-				var hazard = game.add.sprite((Math.random()*(game.width-100))+50, (Math.random()*(game.height-100))+50, 'hazard');
+				var hazard = game.add.sprite(game.width+100, game.height+100, 'hazard');
 				hazard.scale.setTo(1, 1);
 				game.physics.enable(hazard, Phaser.Physics.ARCADE);
 				//hazard.body.immovable = true;
 				hazard.body.allowGravity = false;
-				hazard.visible = true;
+				//hazard.visible = true;
 				hazards.add(hazard);
 			}
 			
