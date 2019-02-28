@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Phaser Basic Project Template</title>
+	<script src="js/phaser.min.js"></script>
+	<!-- Boot.js must come first since it creates the BasicGame object
+	that stores all the states. -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Preloader.js"></script>
+	<script src="js/MainMenu.js"></script>
+	<script src="js/Game.js"></script>
+	<script src="js/GameOver.js"></script>
+	<!-- main.js must come last since it references the other ones. -->
+	<script src="js/main.js"></script>
+
+<style>
+body
+{
+    color: #777;
+    font-family: "Avenir", Verdana, sans-serif;
+}
+#readme
+{
+    margin-top: 10px;
+}
+</style>
+
+</head>
+<body>
+<div id="game"></div>
+<div id="readme">
+<h2>Blown Away</h2>
+
+<ul>
+<li><strong>Originality:</strong>
+What is original about your game? - This game allows the player to become a bird and avoid getting blown away in wind storm.
+</li>
+
+<li><strong>Technical Merit:</strong>
+What is interesting about your game technology? The gravity changes variably and randomly every few seconds, forcing the player to change their strategy on the fly. DA4 - Debris and collectibles fly with the wind, forcing the player to adjust their course to collect items and dodge hazards.
+</li>
+
+<li><strong>Prototype Postmortem:</strong>
+What did you learn from this prototype? I learned about physics in phaser, mainly how to update gravities in different directions, as well as how to create gamestates that share resources.
+What was the easiest or hardest part of making it? The hardest part of this prototype was understanding the relationship between gamestates and ensuring that appropriate variables are reset when switching between them. The easiest part was implementing the movement of the player and interactible objects.
+
+-DA4: 
+</li>
+
+<li><strong>Prototype Assets:</strong>
+Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
+<ul>
+<li>Arrows: <a href="http://www.stickpng.com/img/icons-logos-emojis/arrows/arrow-orange-right">Arrows</a></li>
+<li>Collectible: <a href="https://www.pngarts.com/explore/15681">Redbull</a></li>
+<li>Player: <a href="https://chapmanworld.com/2015/03/04/delphi-sprite-engine-part-3-the-sprite/">bird</a><li>
+<li>Player: <a href="https://www.cvrpg.com/page/more/sprites">angel</a><li>
+<li>hazards: <a href="https://www.spriters-resource.com/neo_geo_ngcd/ms5/">debris</a><li>
+<li>loading bar: <a href="https://stackoverflow.com/questions/19765660/is-it-possible-to-render-indeterminate-progress-bar-with-twitter-bootstrap">loading bar</a></li>
+<li>loading screen(wings): <a href="https://wallpapercave.com/wing-wallpaper">wings background</a></li>
+<li>sky background: <a href="https://www.videoblocks.com/video/sky-background-with-clouds-seamless-looping-animation-of-a-cartoon-spring-or-summer-blue-sky-backdrop-with-clouds-layers-moving-to-the-left-soj7hjlw7jlhxvmp8">Action On Click</a></li>
+<li>menu buttons: <a href="https://www.justinmind.com/blog/how-to-design-button-states-best-practices-tips/">Action On Click</a></li>
+<li>Loading screen: self-made</li>
+<li>Puppy image: self-made</li>
+<li>Button: Phaser example <a href="https://phaser.io/examples/v2/buttons/action-on-click">Action On Click</a></li>
+<li>Bouncing Phaser image: <a href="https://phaser.io/download/logo">Phaser logo</a></li>
+<li>Music: "Poppers and Prosecco" Kevin MacLeod (<a href="incompetech.com">incompetech.com</a>). Licensed under <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons: By Attribution 3.0 License</a></li>
+<li>Timer: "Phaser examples - custom timers" (<a href="https://phaser.io/examples/v2/time/custom-timer">Action On Click</a></li>
+<li>MenuButton: <a href="http://viroqua-wisconsin.com/photo-gallery/main-menu-button">Action On Click</a></li>
+<li>Music: BenSound <a href="https://www.bensound.com/royalty-free-music/4">Music</a></li>
+<li>GameOver track: Sound Bible <a href="http://soundbible.com/1712-Power-Down.html">Game Over</a></li>
+</ul>
+</li>
+
+<li><strong>Prototype Closest Other Game:</strong>
+Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
+<li>This prototype closely resembles the gamestate template provided on the github repo, however, the game is completely different, and all the assets have been replaced. The code was also tweaked to be more cohesive with the Game gamestate</li>
+<ul>
+<li>The code for this example is adapted from the <a href="https://github.com/photonstorm/phaser/tree/v2.6.2/resources/Project%20Templates/Basic">Phaser Basic Project Template</a></li>
+</ul>
+</li>
+
+<li><strong>High Concept:</strong>
+A one-sentence summary of your game. - Become a person with wings, or just a bird and avoid getting blown off the screen by the harsh winds.
+</li>
+
+<li><strong>Theme:</strong>
+State which of the Storymatic themes you used. People with Wings
+</li>
+
+<li><strong>Mandated Variety:</strong>
+State which input, randomness, genre, and play style you used in this prototype. - Input is wasd for movement of the player, up, down, left, and right. Randomness comes from the spawning of the collectibles, which will force players to change their strategy on the fly. It is risky to go for something on the edge of the screen when the wind is about to change, it's much safer to try and stay in the middle of the screen.
+</li>
+
+<li><strong>Prototype Goal:</strong>
+What game mechanic is this prototype evaluating?
+This prototype evaluates the game mechanic of variable gravity in the form of wind.
+</li>
+
+<li><strong>Player Experience Goals:</strong>
+What experience do you want players to have when playing your game?
+Players should struggle against the wind, and plan their moves in anticipation of the changing wind.
+</li>
+
+<li><strong>Gameplay:</strong>
+A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.
+</li>
+
+<li><strong>Strategies:</strong>
+What player strategies do you expect will be effective at playing this game?
+</li>
+
+<li><strong>Story/Setting/Premise:</strong>
+A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, mention it here. If the game is abstract, then say so.
+How will the dramatic tension interact with the gameplay tension?
+This game is set in a world where drinking well marketed energy drinks about bulls will give you wings, by turning you into a pidgeon. The game itself is abstract. The player can form their own ideas behind the motivation of their bird/person character and the reason they are collecting energy drinks.
+</li>
+
+<li><strong>Target Audience:</strong>
+A single sentence that describes the demographic you're trying to reach. - This prototype is trying to reach anyone who enjoys the idea of being a bird.
+</li>
+
+<li><strong>Play Time:</strong>
+How long does your game take to play? A few minutes
+</li>
+
+</ul>
+</div>
+</body>
+</html>
